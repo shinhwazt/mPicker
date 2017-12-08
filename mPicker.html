@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style>
+    .zt-picker {
+      width: 750px;
+      height: 800px;
+      position: fixed;
+      left: 50%;
+      margin-left: -375px;
+      bottom: -800px;
+      background-color: white
+    }
+
+
+
+
+    .picker-header {
+      height: 50px;
+      width: 750px;
+      background-color: white
+    }
+
+    .close-picker {
+      height: 50px;
+      width: 50px;
+      display: inline-block;
+      font-size: 35px;
+      display: inline-block;
+      float: right;
+      text-align: center;
+      line-height: 50px;
+      font-weight: bold;
+    }
+
+    .picker-body {
+      height: 650px;
+      width: 750px;
+      overflow-y: scroll;
+      overflow-x: hidden
+    }
+
+    .picker-date-wrapper {
+      height: 650px;
+      width: 751px;
+      padding-right: 50px;
+      font-size: 30px;
+      padding-right: 1px
+    }
+
+     ::-webkit-scrollbar {
+      width: 1px;
+      height: 100%;
+      background-color: #F5F5F5;
+    }
+
+
+
+
+    .picker-finish {
+      height: 100px;
+      width: 750px;
+      background-color: rgba(8, 161, 154, 0.8);
+      border-radius: 10px;
+      margin: 0 auto
+    }
+
+    .picker-finish-text {
+      height: 70px;
+      width: 750px;
+      line-height: 70px;
+      text-align: center;
+      font-size: 35px;
+      color: white;
+      font-weight: bold
+    }
+
+    .picker-finish-show {
+      height: 30px;
+      width: 750px;
+      line-height: 30px;
+      text-align: center;
+      font-size: 20px;
+      color: white;
+      font-weight: bold
+    }
+
+    .picker-date-wrapper tbody td {
+      text-align: center;
+      height: 100px;
+      cursor: pointer
+    }
+
+    .picker-date-wrapper .current-month-day {
+      color: black;
+      border-bottom: 1px solid black
+    }
+
+    .month-day-select {
+      display: inline-block;
+      height: 45px;
+      width: 45px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 45px
+    }
+
+    .current-month-day-readonly {
+      display: inline-block;
+      height: 45px;
+      width: 45px;
+      color: gray
+    }
+
+    .month-day-active {
+      background-color: rgba(8, 161, 154, 0.8);
+      color: white
+    }
+    /*.picker-date-wrapper .current-month-day:hover{color:white;background-color:blue}*/
+
+    .picker-date-wrapper .last-day,
+    .picker-date-wrapper .next-day {
+      color: gray
+    }
+    /*.picker-date-wrapper .last-day:hover,.picker-date-wrapper .next-day:hover{color:black;background-color:gray}*/
+
+    .picker-month-help {
+      height: 50px;
+      width: 750px;
+      text-align: center;
+      margin-top: 20px
+    }
+
+    .picker-month-help span {
+      display: inline-block;
+      border: 1px solid rgba(8, 161, 154, 0.4);
+      padding: 0 10px;
+      border-radius: 5px
+    }
+
+    .picker-month-help .month-show {
+      margin-left: 20px
+    }
+
+    .connection-line {
+      color: white;
+      position: relative;
+      width: 100%;
+      background-color: rgba(8, 161, 154, 0.4);
+      border-radius: 0
+    }
+    /*.connection-line::after{content:"";height:45px;width:45px;background-color:red}*/
+
+    .line-start {
+      position: relative;
+      z-index: 10
+    }
+
+    .line-start:before {
+      content: "入住";
+      height: 20px;
+      width: 45px;
+      display: inline-block;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      font-size: 15px;
+      text-align: center;
+      line-height: 20px;
+      color: rgba(8, 161, 154, 1)
+    }
+
+    .line-end {
+      position: relative;
+      z-index: 10
+    }
+
+    .line-end:before {
+      content: "退房";
+      height: 20px;
+      width: 45px;
+      display: inline-block;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      font-size: 15px;
+      text-align: center;
+      line-height: 20px;
+      color: rgba(8, 161, 154, 1)
+    }
+
+    .select_time {
+      height: 50px;
+      width: 200px;
+      font-size: 35px;
+      color: black
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="select-time-wrapper">
+    <div class="select-time-left">
+      <div class="start-end-title">
+        最早出发时间
+      </div>
+      <div class="start-time">请选择出发日期</div>
+    </div>
+    <div class="select-time-middle"></div>
+    <div class="select-time-right">
+      <div class="start-end-title">
+        最晚回程日期
+      </div>
+      <div class="end-time">请选择回程日期</div>
+    </div>
+  </div>
+
+  <div class="zt-picker">
+    <div class="picker-header"><span class="close-picker">&times;</span></div>
+    <div class="picker-body">
+      <div class="picker-date-wrapper">
+
+      </div>
+    </div>
+    <div class="picker-footer">
+      <div class="picker-finish">
+        <div class="picker-finish-text">请选择出发日期</div>
+        <div class="picker-finish-show"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script src="jq.js"></script>
+  <script>
+  /*
+    $(".select-time-wrapper").click(function() {
+      $(".zt-picker").animate({
+        "bottom": 0
+      }, 500);
+    });*/
+    $(".close-picker").click(function() {
+      $(".zt-picker").animate({
+        "bottom": "-800px"
+      }, 500);
+    });
+    //显示时间
+    $(".picker-finish").click(function() {
+      var _this = $(this);
+      var start = _this.find(".user-select-start");
+      var end = _this.find(".user-select-end");
+      if (start.length == 0 || end.length == 0) {
+        return;
+      }
+      server_start_time = start.html();
+      server_end_time = end.html();
+      var startArr = start.html().split("-");
+      var startYear = startArr[0];
+      var startMonth = startArr[1];
+      var startDay = startArr[2];
+      var startDate = new Date(startYear, startMonth - 1, startDay);
+      var startWeek = startDate.getDay();
+      startWeek = convertWeek(startWeek);
+      var endArr = end.html().split("-");
+      var endYear = endArr[0];
+      var endMonth = endArr[1];
+      var endDay = endArr[2];
+      var endDate = new Date(endYear, endMonth - 1, endDay);
+      var endWeek = endDate.getDay();
+      endWeek = convertWeek(endWeek);
+      var startText = startWeek + "," + startMonth + "月" + startDay + "号," + startYear
+      var endText = endWeek + "," + endMonth + "月" + endDay + "号," + endYear;
+      travel_days = (endDate - startDate) / (24 * 60 * 60 * 1000) + 1;
+      $(".start-time").html(startText);
+      $(".end-time").html(endText);
+      //$(".select_time").html(start.html() + end.html());
+      $(".zt-picker").animate({
+        "bottom": "-800px"
+      }, 500);
+
+      function convertWeek(week) {
+        if (week == 0) {
+          return "周日";
+        } else if (week == 1) {
+          return "周一"
+        } else if (week == 2) {
+          return "周二"
+        } else if (week == 3) {
+          return "周三"
+        } else if (week == 4) {
+          return "周四"
+        } else if (week == 5) {
+          return "周五"
+        } else if (week == 6) {
+          return "周六"
+        }
+      }
+    })
+
+    function mPicker(selector){
+      this.MONTH_NO = 12;//日历包含多少个月
+      this.canSelect = 0;//按顺序标识出每一个可以选择的日期
+      this.domStr = "";//日历主体
+      this.current = new Date(); //当前时间
+      this.LOOP_MONTH = this.current;
+      this.selectedTimeArr = [];
+      var dom = document.querySelector(selector);
+      dom.onclick = function(){
+        var picker = document.querySelector(".zt-picker");
+        picker.style.bottom = 0
+        picker.style.transition = "bottom .5s";
+      }
+    }
+
+    //创建一个月
+    mPicker.prototype.createMonth = function(date){
+
+      var year = date.getFullYear(); //当前年
+      var month = date.getMonth(); //当前月
+      var day = date.getDate(); //当前日
+      var week = this.getWeek(date); //计算现在是周几
+      week == 0 ? week = 7 : "";
+      var allDays = this.getCurrentMonthDays(date); //计算本月有多少天
+      var lastDays = this.getLastMonthDays(date); //计算上月有多少天
+      var flag = true;
+      var index = 1; //当前月份的日期
+      var next = 1; //上一月份的日期
+      var isFinish = false; //判断日历元素是否完成
+
+      this.domStr += "<div class='picker-month-help'>" +
+        "<span class='year-show'>" + year + "</span>" +
+        "<span class='month-show'>" + (month + 1) + "月</span>" +
+        "</div>"
+
+      this.domStr += "<table id='demo' width='750' border='0' cellspacing='0' cellpadding='0'>" +
+        "<thead>" +
+        "<tr>" +
+        "<th>一</th>" +
+        "<th>二</th>" +
+        "<th>三</th>" +
+        "<th>四</th>" +
+        "<th>五</th>" +
+        "<th>六</th>" +
+        "<th>日</th>" +
+        "</tr>" +
+        "</thead>" +
+        "<tbody>";
+
+      for (var i = 0; i < 6; i++) {
+        this.domStr += "<tr>"
+        for (var j = 1; j < 8; j++) {
+          if (i > 0 || j >= week) {
+            if (index > allDays) {
+              isFinish = true
+              this.domStr += "<td class='next-day'></td>";
+              next++;
+            } else {
+              if (index >= day) {
+                this.domStr += "<td class='current-month-day'><span class='month-day-select can-select-" + this.canSelect + "' data-index='" + this.canSelect + "' data-year='" + year + "' data-month='" + (month + 1) + "'>" + index + "</span></td>";
+                this.canSelect++;
+              } else {
+                this.domStr += "<td class='current-month-day'><span class='current-month-day-readonly'>" + index + "</span></td>";
+              }
+            }
+            index++;
+          } else {
+            this.domStr += "<td class='last-day'></td>"
+          }
+        }
+        this.domStr += "</tr>";
+        if (isFinish) {
+          break;
+        }
+      }
+      this.domStr += "</tbody>" +
+        "</table>";
+    }
+    //创建整个日历
+    mPicker.prototype.createCalendar = function(){
+      this.createMonth(this.current);
+      for (var i = 0; i < this.MONTH_NO; i++) {
+        this.LOOP_MONTH = this.getNextMonth(this.LOOP_MONTH);
+        this.createMonth(this.LOOP_MONTH);
+      }
+    }
+
+    mPicker.prototype.createConnectionLine = function() {
+      var actived = $(".month-day-active");
+      if (actived.length < 2) {
+        if (actived.length == 1) {
+          actived.eq(0).addClass("line-start");
+        }
+        return;
+      }
+      var lines = $(".connection-line");
+      var lineEnd = $(".line-end");
+      var lineStart = $(".line-start");
+      lines.length > 0 ? lines.removeClass("connection-line") : "";
+      lineEnd.length > 0 ? lineEnd.removeClass("line-end") : "";
+      lineStart.length > 0 ? lineStart.removeClass("line-start") : "";
+
+      var selected = $(".month-day-active");
+      var first_selected = selected.eq(0);
+      var second_selected = selected.eq(1);
+      var first_index = first_selected.data("index");
+      var second_index = second_selected.data("index");
+      if (second_index > first_index) {
+        first_selected.addClass("line-start");
+        second_selected.addClass("line-end");
+      } else {
+        first_selected.addClass("line-end");
+        second_selected.addClass("line-start");
+      }
+      for (i = first_index + 1; i < second_index; i++) {
+        var current = $(".can-select-" + i);
+        current.addClass("connection-line");
+      }
+
+    }
+
+    mPicker.prototype.dayClickHandler = function() {
+      var all = $(".month-day-select");
+      all.click(function() {
+        var _this = $(this);
+        var selected = $(".month-day-active");
+        var _length = selected.length; //已选中的日期数目
+        if (_length <= 1) {
+          _this.hasClass("month-day-active") ? _this.removeClass("month-day-active") : _this.addClass("month-day-active");
+        } else {
+          var first_selected = selected.eq(0);
+          var second_selected = selected.eq(1);
+          var first_index = first_selected.data("index");
+          var second_index = second_selected.data("index");
+          if (second_index < first_index) {
+            var middle = first_selected;
+            first_selected = second_selected;
+            second_selected = middle;
+          }
+          var current_index = _this.data("index");
+          if (current_index < first_index) {
+            first_selected.removeClass("month-day-active");
+            _this.addClass("month-day-active");
+          }
+          if (current_index > second_index) {
+            second_selected.removeClass("month-day-active");
+            _this.addClass("month-day-active");
+          }
+          if (first_index < current_index < second_index) {
+            var current_first_gap = current_index - first_index;
+            var current_second_gap = second_index - current_index;
+            if (current_second_gap > current_first_gap) {
+              first_selected.removeClass("month-day-active");
+              _this.addClass("month-day-active");
+            } else {
+              second_selected.removeClass("month-day-active");
+              _this.addClass("month-day-active");
+            }
+          }
+        }
+        var year = _this.data("year");
+        var month = _this.data("month");
+        var day = _this.html();
+        var _index = _this.data("index");
+
+        var _json = {
+          time: year + "-" + month + "-" + day,
+          index: _index
+        }
+
+        if (selectedTimeArr.length <= 1) {
+          selectedTimeArr.push(_json);
+        } else {
+          selectedTimeArr.splice(0, 1).push(_json);
+        }
+        showTimeInPickerFinish();
+        createConnectionLine();
+
+      });
+    }
+
+    mPicker.prototype.showTimeInPickerFinish = function () {
+      var selected = $(".month-day-active");
+      var _length = selected.length;
+      if (_length == 1) {
+        var year = selected.data("year");
+        var month = selected.data("month");
+        var day = selected.html();
+        $(".picker-finish-show").html(year + "-" + month + "-" + day);
+        $(".picker-finish-text").html("请选择回程日期");
+      } else {
+        var start = selected.eq(0);
+        var end = selected.eq(1);
+        var start_index = start.data("index");
+        var end_index = end.data("index");
+        if (start_index > end_index) {
+          var middle = start;
+          start = end;
+          end = middle;
+        }
+        var startTime = start.data("year") + "-" + start.data("month") + "-" + start.html();
+        var endTime = end.data("year") + "-" + end.data("month") + "-" + end.html();
+
+        var startDate = new Date(start.data("year"), start.data("month") - 1, start.html());
+        var endDate = new Date(end.data("year"), end.data("month") - 1, end.html());
+        var eveings = (endDate - startDate) / (24 * 60 * 60 * 1000);
+
+        $(".picker-finish-show").html("<span class='user-select-start'>" + startTime + "</span>至<span class='user-select-end'>" + endTime + "</span>(共" + eveings + "晚)");
+        $(".picker-finish-text").html("完成");
+      }
+    }
+
+    mPicker.prototype.getWeek = function (dateObj) {
+      var year = dateObj.getFullYear();
+      var month = dateObj.getMonth();
+      var date = new Date(year, month, 1);
+      return date.getDay();
+    }
+
+    mPicker.prototype.getCurrentMonthDays = function (dateObj) {
+      var year = dateObj.getFullYear();
+      var month = dateObj.getMonth();
+      var date = new Date(year, month + 1, 0);
+      return date.getDate();
+    }
+
+    mPicker.prototype.getLastMonthDays = function (dateObj) {
+      var year = dateObj.getFullYear();
+      var month = dateObj.getMonth();
+      var date = new Date(year, month, 0);
+      return date.getDate();
+    }
+
+    mPicker.prototype.getNextMonth = function (dateObj) {
+        var year = dateObj.getFullYear();
+        var month = dateObj.getMonth();
+        return new Date(year, month + 1, 1)
+      }
+
+    mPicker.prototype.initPicker = function(){
+      this.createCalendar();
+      document.querySelector(".picker-date-wrapper").innerHTML += this.domStr;
+      this.dayClickHandler();
+      $(".can-select-0").css("color", "blue")
+    }
+
+    var picker = new mPicker(".select-time-wrapper");
+    picker.initPicker();
+
+  </script>
+</body>
+
+</html>
