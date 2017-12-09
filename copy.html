@@ -92,12 +92,20 @@
       font-weight: bold
     }
 
-    .picker-date-wrapper tbody td {
+    .picker-date-wrapper tbody td, .picker-date-wrapper thead th{
+      
+     
+      border: none;
+
+      display: flex;
+    }
+    .picker-date-wrapper tbody td > span,.picker-date-wrapper thead th > span{
+      flex: 1;
       text-align: center;
       height: 100px;
       cursor: pointer;
-      background: pink;
-      border: none
+       background: pink;
+
     }
 
     .picker-date-wrapper .current-month-day {
@@ -344,39 +352,40 @@ window.onresize = function(){
       this.domStr += "<table id='demo' width='100%' border='0' cellspacing='0px' cellpadding='0px'>" +
         "<thead>" +
         "<tr>" +
-        "<th>一</th>" +
-        "<th>二</th>" +
-        "<th>三</th>" +
-        "<th>四</th>" +
-        "<th>五</th>" +
-        "<th>六</th>" +
-        "<th>日</th>" +
-        "</tr>" +
+        "<th>" +
+        "<span>一</span>"+
+        "<span>二</span>" +
+        "<span>三</span>" +
+        "<span>四</span>" +
+        "<span>五</span>" +
+        "<span>六</span>" +
+        "<span>日</span>" +
+        "</th></tr>" +
         "</thead>" +
         "<tbody rules='none'>";
 
       for (var i = 0; i < 6; i++) {
-        this.domStr += "<tr>"
+        this.domStr += "<tr><td>"
         for (var j = 1; j < 8; j++) {
           if (i > 0 || j >= week) {
             if (index > allDays) {
               isFinish = true
-              this.domStr += "<td class='next-day'></td>";
+              this.domStr += "<span class='next-day'></span>";
               next++;
             } else {
               if (index >= day) {
-                this.domStr += "<td class='current-month-day'><span class='month-day-select can-select-" + this.canSelect + "' data-index='" + this.canSelect + "' data-year='" + year + "' data-month='" + (month + 1) + "'>" + index + "</span></td>";
+                this.domStr += "<span class='current-month-day'><span class='month-day-select can-select-" + this.canSelect + "' data-index='" + this.canSelect + "' data-year='" + year + "' data-month='" + (month + 1) + "'>" + index + "</span></span>";
                 this.canSelect++;
               } else {
-                this.domStr += "<td class='current-month-day'><span class='current-month-day-readonly'>" + index + "</span></td>";
+                this.domStr += "<span class='current-month-day'><span class='current-month-day-readonly'>" + index + "</span></span>";
               }
             }
             index++;
           } else {
-            this.domStr += "<td class='last-day'></td>"
+            this.domStr += "<span class='last-day'></span>"
           }
         }
-        this.domStr += "</tr>";
+        this.domStr += "</td></tr>";
         if (isFinish) {
           break;
         }
