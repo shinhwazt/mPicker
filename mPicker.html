@@ -96,7 +96,7 @@
       text-align: center;
       height: 100px;
       cursor: pointer;
-      background: pink;
+     
       border: none
     }
 
@@ -152,11 +152,9 @@
     }
 
     .connection-line {
-      color: white;
-      position: relative;
-      width: 100%;
+      
       background-color: rgba(8, 161, 154, 0.4);
-      border-radius: 0
+      
     }
     /*.connection-line::after{content:"";height:45px;width:45px;background-color:red}*/
 
@@ -434,101 +432,100 @@ window.onresize = function(){
     }
 
     mPicker.prototype.createConnectionLine = function() {
-      var actived = $(".month-day-active");
-      if (actived.length < 2) {
-        if (actived.length == 1) {
-          actived.eq(0).addClass("line-start");
-        }
-        return;
-      }
-      var lines = $(".connection-line");
-      var lineEnd = $(".line-end");
-      var lineStart = $(".line-start");
-      lines.length > 0 ? lines.removeClass("connection-line") : "";
-      lineEnd.length > 0 ? lineEnd.removeClass("line-end") : "";
-      lineStart.length > 0 ? lineStart.removeClass("line-start") : "";
+      var selected = document.querySelectorAll(".month-day-active");
+      var lines = document.querySelectorAll(".connection-line");
 
-      var selected = $(".month-day-active");
-      var first_selected = selected.eq(0);
-      var second_selected = selected.eq(1);
-      var first_index = first_selected.data("index");
-      var second_index = second_selected.data("index");
-      if (second_index > first_index) {
-        first_selected.addClass("line-start");
-        second_selected.addClass("line-end");
-      } else {
-        first_selected.addClass("line-end");
-        second_selected.addClass("line-start");
+      if(lines.length!=0){
+        for(var i=0,il=lines.length;i<il;i++){
+          lines[i].classList.remove("connection-line");
+        }
       }
-      for (i = first_index + 1; i < second_index; i++) {
-        var current = $(".can-select-" + i);
-        current.addClass("connection-line");
+      if (selected.length == 2) {
+
+        
+        
+        
+
+        
+        var first_selected = selected[0];
+        var second_selected = selected[1];
+        var first_index = first_selected.childNodes[0].dataset.index-0;
+        var second_index = second_selected.childNodes[0].dataset.index-0;
+        if (second_index < first_index) {
+          var vector_index = first_index;
+          first_index = second_index;
+          second_index = vector_index;
+        } 
+        for (i = first_index + 1; i < second_index; i++) {
+          document.querySelector(".can-select-"+i).parentNode.classList.add("connection-line");
+          
+        }
+        
       }
+      
 
     }
 
-    mPicker.prototype.dayClickHandler = function() {
-      var all = $(".month-day-select");
-      all.click(function() {
-        var _this = $(this);
-        var selected = $(".month-day-active");
-        var _length = selected.length; //已选中的日期数目
-        if (_length <= 1) {
-          _this.hasClass("month-day-active") ? _this.removeClass("month-day-active") : _this.addClass("month-day-active");
-        } else {
-          var first_selected = selected.eq(0);
-          var second_selected = selected.eq(1);
-          var first_index = first_selected.data("index");
-          var second_index = second_selected.data("index");
-          if (second_index < first_index) {
-            var middle = first_selected;
-            first_selected = second_selected;
-            second_selected = middle;
-          }
-          var current_index = _this.data("index");
-          if (current_index < first_index) {
-            first_selected.removeClass("month-day-active");
-            _this.addClass("month-day-active");
-          }
-          if (current_index > second_index) {
-            second_selected.removeClass("month-day-active");
-            _this.addClass("month-day-active");
-          }
-          if (first_index < current_index < second_index) {
-            var current_first_gap = current_index - first_index;
-            var current_second_gap = second_index - current_index;
-            if (current_second_gap > current_first_gap) {
-              first_selected.removeClass("month-day-active");
-              _this.addClass("month-day-active");
-            } else {
-              second_selected.removeClass("month-day-active");
-              _this.addClass("month-day-active");
+    mPicker.prototype.dailyClickHandler = function() {
+
+      var _this = this;
+      var zt = this.zt;
+      var all = document.querySelectorAll(".month-day-select");
+      var wrapper = zt(".picker-body");
+      wrapper.addEventListener("click",function(e){
+
+         var e = e||window.event;
+
+         var _target = null;
+         var selected = document.querySelectorAll(".month-day-active");
+
+         if(e.target.classList.contains("current-month-day")){
+          _target = e.target;
+         }else if(e.target.parentNode.classList.contains("current-month-day")){
+          _target = e.target.parentNode
+         }
+
+         if(_target!=null){
+
+          if(selected.length==0){
+            _target.classList.add("month-day-active");
+          }else if(selected.length==1){
+           _target.classList.contains("month-day-active")?_target.classList.remove("month-day-active"): _target.classList.add("month-day-active");
+          }else if(selected.length==2){
+            if(_target.classList.contains("month-day-active")){
+              _target.classList.remove("month-day-active");
+            }else{
+              for(var i=0,il=selected.length;i<il;i++){
+                selected[i].classList.remove("month-day-active");
+              }
+              
+              _target.classList.add("month-day-active");
             }
+
           }
-        }
-        var year = _this.data("year");
-        var month = _this.data("month");
-        var day = _this.html();
-        var _index = _this.data("index");
 
-        var _json = {
-          time: year + "-" + month + "-" + day,
-          index: _index
-        }
+          //showTimeInPickerFinish();
+          _this.createConnectionLine();
 
-        if (selectedTimeArr.length <= 1) {
-          selectedTimeArr.push(_json);
-        } else {
-          selectedTimeArr.splice(0, 1).push(_json);
-        }
-        showTimeInPickerFinish();
-        createConnectionLine();
 
-      });
+
+          
+         }
+
+       
+
+        
+        
+        
+
+      })
+      
+      
     }
 
     mPicker.prototype.showTimeInPickerFinish = function () {
-      var selected = $(".month-day-active");
+
+      var selected = qocument.querySelectorAll(".month-day-active");
       var _length = selected.length;
       if (_length == 1) {
         var year = selected.data("year");
@@ -588,8 +585,12 @@ window.onresize = function(){
     mPicker.prototype.initPicker = function(){
       this.createPicker();
       this.bindEventHandler();
-      this.dayClickHandler();
+      this.dailyClickHandler();
       $(".can-select-0").css("color", "blue")
+    }
+
+    mPicker.prototype.zt = function(ele){
+      return document.querySelector(ele);
     }
 
     var picker = new mPicker(".select-time-wrapper");
