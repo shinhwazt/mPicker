@@ -248,82 +248,27 @@ window.onresize = function(){
   }
 }
   </script>
-  <script src="jq.js"></script>
+
   <script>
-  /*
-    $(".select-time-wrapper").click(function() {
-      $(".zt-picker").animate({
-        "bottom": 0
-      }, 500);
-    });*/
 
-    //显示时间
-    $(".picker-finish").click(function() {
-      var _this = $(this);
-      var start = _this.find(".user-select-start");
-      var end = _this.find(".user-select-end");
-      if (start.length == 0 || end.length == 0) {
-        return;
-      }
-      server_start_time = start.html();
-      server_end_time = end.html();
-      var startArr = start.html().split("-");
-      var startYear = startArr[0];
-      var startMonth = startArr[1];
-      var startDay = startArr[2];
-      var startDate = new Date(startYear, startMonth - 1, startDay);
-      var startWeek = startDate.getDay();
-      startWeek = convertWeek(startWeek);
-      var endArr = end.html().split("-");
-      var endYear = endArr[0];
-      var endMonth = endArr[1];
-      var endDay = endArr[2];
-      var endDate = new Date(endYear, endMonth - 1, endDay);
-      var endWeek = endDate.getDay();
-      endWeek = convertWeek(endWeek);
-      var startText = startWeek + "," + startMonth + "月" + startDay + "号," + startYear
-      var endText = endWeek + "," + endMonth + "月" + endDay + "号," + endYear;
-      travel_days = (endDate - startDate) / (24 * 60 * 60 * 1000) + 1;
-      $(".start-time").html(startText);
-      $(".end-time").html(endText);
-      //$(".select_time").html(start.html() + end.html());
-      $(".zt-picker").animate({
-        "bottom": "-800px"
-      }, 500);
 
-      function convertWeek(week) {
-        if (week == 0) {
-          return "周日";
-        } else if (week == 1) {
-          return "周一"
-        } else if (week == 2) {
-          return "周二"
-        } else if (week == 3) {
-          return "周三"
-        } else if (week == 4) {
-          return "周四"
-        } else if (week == 5) {
-          return "周五"
-        } else if (week == 6) {
-          return "周六"
-        }
-      }
-    })
 
     function mPicker(selector){
-      this.MONTH_NO = 12;//日历包含多少个月
+
       this.canSelect = 0;//按顺序标识出每一个可以选择的日期
       this.domStr = "";//日历主体
       this.current = new Date(); //当前时间
       this.LOOP_MONTH = this.current;
-      this.selectedTimeArr = [];
-      this.selector = selector;
-      this.beforeActive = function(){},
-      this.finishSelect = function(start,end){
-        console.log("预定日期为："+start.text+"至"+end.text)
-      },
       this.start = null;
       this.end = null;
+
+      this.count = 12;//日历包含多少个月
+      this.selector = selector;
+      this.beforeActive = function(){};
+      this.finishSelect = function(start,end){
+        console.log("预定日期为："+start.text+"至"+end.text)
+      };
+
     }
 
     //创建一个月
@@ -366,11 +311,11 @@ window.onresize = function(){
           if (i > 0 || j >= week) {
             if (index > allDays) {
               isFinish = true
-              this.domStr += "<td class='next-day'></td>";
+              //this.domStr += "<td class='next-day'></td>";
               next++;
             } else {
               if (index >= day) {
-                this.domStr += "<td class='current-month-day'><span class='month-day-select can-select-" + this.canSelect + "' data-index='" + this.canSelect + "' data-year='" + year + "' data-month='" + (month + 1) + "'>" + index + "</span></td>";
+                this.domStr += "<td class='current-month-day'><span class='month-day-select can-select-" + this.canSelect + "' data-index='" + this.canSelect + "' data-year='" + year + "' data-month='" + (month + 1) + "'data-day='" + index + "'>" + index + "</span></td>";
                 this.canSelect++;
               } else {
                 this.domStr += "<td class='current-month-day'><span class='current-month-day-readonly'>" + index + "</span></td>";
@@ -392,7 +337,7 @@ window.onresize = function(){
     //创建多个月份
     mPicker.prototype.createCalendar = function(){
       this.createMonth(this.current);
-      for (var i = 0; i < this.MONTH_NO; i++) {
+      for (var i = 0; i < this.count; i++) {
         this.LOOP_MONTH = this.getNextMonth(this.LOOP_MONTH);
         this.createMonth(this.LOOP_MONTH);
       }
@@ -574,7 +519,7 @@ window.onresize = function(){
           date:startDate
         }
 
-      } else {
+      } else if(_length == 2){
         var start = selected[0].firstElementChild;
         var end = selected[1].firstElementChild;
         var start_index = start.dataset.index-0;
@@ -642,21 +587,28 @@ window.onresize = function(){
         return new Date(year, month + 1, 1)
       }
 
-    mPicker.prototype.initPicker = function(){
+    mPicker.prototype.init = function(){
+      var zt = this.zt;
+      this.addStyle();
       this.createPicker();
       this.bindEventHandler();
       this.dailyClickHandler();
-      $(".can-select-0").css("color", "blue")
+      zt(".can-select-0").style.color = "blue";
     }
 
     mPicker.prototype.zt = function(ele){
       return document.querySelector(ele);
     }
 
+    mPicker.prototype.addStyle = function(){
+      var style = document.createElement("style");
+
+      style.innerHTML = ""
+    }
 
 
     var picker = new mPicker(".select-time-wrapper");
-    picker.initPicker();
+    picker.init();
 
   </script>
 </body>
