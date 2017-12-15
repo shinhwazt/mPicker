@@ -10,18 +10,19 @@
   <title>Document</title>
   <style>
   *{margin: 0;padding: 0}
+  @media screen and (orientation: portrait) {
+  /*竖屏 css*/
+}
+@media screen and (orientation: landscape) {
+  /*横屏 css*/
+}
     .zt-picker {
       width: 100%;
       height: 800px;
       position: fixed;
-      
       bottom: -800px;
       background-color: white
     }
-
-
-
-
     .picker-header {
       height: 50px;
       width: 100%;
@@ -66,16 +67,16 @@
 
     .picker-finish {
       height: 100px;
-      width: 100%
+      width: 100%;
       background-color: rgba(8, 161, 154, 0.8);
       border-radius: 10px;
       margin: 0 auto
     }
 
     .picker-finish-text {
-      height: 70px;
+      height: 50px;
       width: 100%;
-      line-height: 70px;
+      line-height: 50px;
       text-align: center;
       font-size: 35px;
       color: white;
@@ -83,9 +84,9 @@
     }
 
     .picker-finish-show {
-      height: 30px;
+      height: 50px;
       width: 100%;
-      line-height: 30px;
+      line-height: 50px;
       text-align: center;
       font-size: 20px;
       color: white;
@@ -96,7 +97,7 @@
       text-align: center;
       height: 100px;
       cursor: pointer;
-     
+
       border: none
     }
 
@@ -152,9 +153,9 @@
     }
 
     .connection-line {
-      
+
       background-color: rgba(8, 161, 154, 0.4);
-      
+
     }
     /*.connection-line::after{content:"";height:45px;width:45px;background-color:red}*/
 
@@ -229,7 +230,7 @@
     </div>
   </div>
 
-  
+
 
   <script type="text/javascript">
     var phoneScale = parseInt(window.screen.width) / 750;
@@ -255,7 +256,7 @@ window.onresize = function(){
         "bottom": 0
       }, 500);
     });*/
-    
+
     //显示时间
     $(".picker-finish").click(function() {
       var _this = $(this);
@@ -317,6 +318,12 @@ window.onresize = function(){
       this.LOOP_MONTH = this.current;
       this.selectedTimeArr = [];
       this.selector = selector;
+      this.beforeActive = function(){},
+      this.finishSelect = function(start,end){
+        console.log("预定日期为："+start.text+"至"+end.text)
+      },
+      this.start = null;
+      this.end = null;
     }
 
     //创建一个月
@@ -407,7 +414,7 @@ window.onresize = function(){
       +'</div>'
       +'<div class="picker-footer">'
       +'<div class="picker-finish">'
-      +'<div class="picker-finish-text">请选择出发日期</div>'
+      +'<div class="picker-finish-text">完成</div>'
       +'<div class="picker-finish-show"></div>'
       +'</div>'
       +'</div>';
@@ -419,15 +426,21 @@ window.onresize = function(){
     }
     //绑定日历点击事件
     mPicker.prototype.bindEventHandler = function(){
+      var _this = this;
       var dom = document.querySelector(this.selector);
       var close = document.querySelector(".close-picker");
       var picker = document.querySelector(".zt-picker");
+      var finish = document.querySelector(".picker-finish");
       dom.onclick = function(){
         picker.style.bottom = 0
         picker.style.transition = "bottom .5s";
       }
       close.onclick = function(){
         picker.style.bottom = "-800px"
+      }
+      finish.onclick = function(){
+        _this.finishSelect(_this.start,_this.end);
+        picker.style.bottom = "-800px";
       }
     }
 
@@ -442,11 +455,11 @@ window.onresize = function(){
       }
       if (selected.length == 2) {
 
-        
-        
-        
 
-        
+
+
+
+
         var first_selected = selected[0];
         var second_selected = selected[1];
         var first_index = first_selected.childNodes[0].dataset.index-0;
@@ -455,14 +468,14 @@ window.onresize = function(){
           var vector_index = first_index;
           first_index = second_index;
           second_index = vector_index;
-        } 
+        }
         for (i = first_index + 1; i < second_index; i++) {
           document.querySelector(".can-select-"+i).parentNode.classList.add("connection-line");
-          
+
         }
-        
+
       }
-      
+
 
     }
 
@@ -485,7 +498,29 @@ window.onresize = function(){
           _target = e.target.parentNode
          }
 
+         var currentSelected = _target.childNodes[0];
+
+         var currentSelectedYear = currentSelected.dataset.year;
+         var currentSelectedMonth = currentSelected.dataset.month;
+         currentSelectedMonth<10?currentSelectedMonth = "0"+currentSelectedMonth:"";
+         var currentSelectedDay = currentSelected.innerText;
+         currentSelectedDay<10?currentSelectedDay = "0"+currentSelectedDay:"";
+         var currentSelectedDate = new Date(currentSelectedYear, currentSelectedMonth - 1, currentSelectedDay);
+         var handlerResult = _this.beforeActive(currentSelectedDate);
+         if(handlerResult===false){
+           return;
+         }
+
+
          if(_target!=null){
+           //禁止选择以前的日期
+          if(currentSelected.classList.contains("current-month-day-readonly")){
+            return;
+          }
+
+
+
+
 
           if(selected.length==0){
             _target.classList.add("month-day-active");
@@ -498,60 +533,85 @@ window.onresize = function(){
               for(var i=0,il=selected.length;i<il;i++){
                 selected[i].classList.remove("month-day-active");
               }
-              
+
               _target.classList.add("month-day-active");
             }
 
           }
 
-          //showTimeInPickerFinish();
+          _this.showTimeInPickerFinish();
           _this.createConnectionLine();
 
 
 
-          
+
          }
 
-       
 
-        
-        
-        
+
+
+
+
 
       })
-      
-      
+
+
     }
 
     mPicker.prototype.showTimeInPickerFinish = function () {
-
-      var selected = qocument.querySelectorAll(".month-day-active");
+      var zt = this.zt;
+      var selected = document.querySelectorAll(".month-day-active");
       var _length = selected.length;
       if (_length == 1) {
-        var year = selected.data("year");
-        var month = selected.data("month");
-        var day = selected.html();
-        $(".picker-finish-show").html(year + "-" + month + "-" + day);
-        $(".picker-finish-text").html("请选择回程日期");
+        var selected = selected[0].firstElementChild;
+        var year = selected.dataset.year;
+        var month = selected.dataset.month;
+        var day = selected.innerText;
+        zt(".picker-finish-show").innerText = year + "-" + month + "-" + day;
+        var startDate = new Date(year, month - 1, day);
+        this.start = {
+          text:year + "-" + month + "-" + day,
+          date:startDate
+        }
+
       } else {
-        var start = selected.eq(0);
-        var end = selected.eq(1);
-        var start_index = start.data("index");
-        var end_index = end.data("index");
+        var start = selected[0].firstElementChild;
+        var end = selected[1].firstElementChild;
+        var start_index = start.dataset.index-0;
+        var end_index = end.dataset.index-0;
         if (start_index > end_index) {
           var middle = start;
           start = end;
           end = middle;
         }
-        var startTime = start.data("year") + "-" + start.data("month") + "-" + start.html();
-        var endTime = end.data("year") + "-" + end.data("month") + "-" + end.html();
+        var startYear = start.dataset.year;
+        var startMonth = start.dataset.month;
+        startMonth<10?startMonth = "0"+startMonth:"";
+        var startDay = start.innerText;
+        startDay<10?startDay = "0"+startDay:"";
 
-        var startDate = new Date(start.data("year"), start.data("month") - 1, start.html());
-        var endDate = new Date(end.data("year"), end.data("month") - 1, end.html());
+        var endYear = end.dataset.year;
+        var endMonth = end.dataset.month;
+        endMonth<10?endMonth = "0"+endMonth:"";
+        var endDay = end.innerText;
+        endDay<10?endDay = "0"+endDay:"";
+
+        var startTime = startYear + "-" + startMonth + "-" +startDay ;
+        var endTime = endYear + "-" + endMonth + "-" +endDay;
+
+        var startDate = new Date(startYear, startMonth - 1, startDay);
+        var endDate = new Date(endYear, endMonth - 1, endDay);
         var eveings = (endDate - startDate) / (24 * 60 * 60 * 1000);
 
-        $(".picker-finish-show").html("<span class='user-select-start'>" + startTime + "</span>至<span class='user-select-end'>" + endTime + "</span>(共" + eveings + "晚)");
-        $(".picker-finish-text").html("完成");
+        zt(".picker-finish-show").innerHTML = "<span class='user-select-start'>" + startTime + "</span>至<span class='user-select-end'>" + endTime + "</span>(共" + eveings + "晚)";
+        this.start = {
+          text:startYear + "-" + startMonth + "-" +startDay,
+          date:startDate
+        }
+        this.end = {
+          text:endYear + "-" + endMonth + "-" +endDay,
+          date:endDate
+        }
       }
     }
 
@@ -592,6 +652,8 @@ window.onresize = function(){
     mPicker.prototype.zt = function(ele){
       return document.querySelector(ele);
     }
+
+
 
     var picker = new mPicker(".select-time-wrapper");
     picker.initPicker();
